@@ -1,19 +1,25 @@
 package com.natesanchez.knowyourgovernment;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Official implements Serializable {
 
   private String name;
   private String seat;
   private String party;
-  private String address;
-  private String number;
-  private String email;
-  private String website;
+  private List<String> address;
+  private List<String> number;
+  private List<String> email;
+  private List<String> website;
   private String imageUrl;
+  private String facebook;
+  private String twitter;
+  private String youtube;
 
-  public Official(String name, String seat, String party, String address, String number, String email, String website, String image) {
+  public Official(String name, String seat, String party, List<String> address,
+                  List<String> number, List<String> email, List<String> website, String image,
+                  String facebook, String twitter, String youtube) {
     this.name = name;
     this.seat = seat;
     this.party = party;
@@ -22,6 +28,9 @@ public class Official implements Serializable {
     this.email = email;
     this.website = website;
     this.imageUrl = image;
+    this.facebook = facebook;
+    this.twitter = twitter;
+    this.youtube = youtube;
   }
 
   public String getName() {
@@ -36,23 +45,35 @@ public class Official implements Serializable {
     return party;
   }
 
-  public String getAddress() {
+  public List<String> getAddress() {
     return address;
   }
 
-  public String getNumber() {
+  public List<String> getNumber() {
     return number;
   }
 
-  public String getEmail() {
+  public List<String> getEmail() {
     return email;
   }
 
-  public String getWebsite() {
+  public List<String> getWebsite() {
     return website;
   }
 
   public String getImageUrl() {
     return imageUrl;
+  }
+
+  public String getFacebook() {
+    return facebook;
+  }
+
+  public String getTwitter() {
+    return twitter;
+  }
+
+  public String getYoutube() {
+    return youtube;
   }
 }
