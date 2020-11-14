@@ -27,7 +27,6 @@ import javax.net.ssl.HttpsURLConnection;
 public class RepsDownloader implements Runnable {
 
   private MainActivity mainActivity;
-  public static HashMap<String, String> repsMap = new HashMap<>();
   final String REPS_URL = "https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyC797zVheg8DufB8kiI7KSfyvLbiM4VXZc&address=";
   private String location;
 
@@ -66,13 +65,17 @@ public class RepsDownloader implements Runnable {
     try {
       JSONObject jObjMain = new JSONObject(s);
       JSONObject normalizedInput = jObjMain.getJSONObject("normalizedInput");
-      String locationString = String.format("%s, %s %s",
-              normalizedInput.getString("city"),
+      String locationString = String.format("%s %s %s",
+              normalizedInput.getString("city") + ", ",
               normalizedInput.getString("state"),
               normalizedInput.getString("zip")
       );
-      TextView mainLocation = mainActivity.findViewById(R.id.main_location);
-      mainLocation.setText(locationString);
+      mainActivity.runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          mainActivity.displayLocation(locationString);
+        }
+      });
       JSONArray offices = jObjMain.getJSONArray("offices");
       JSONArray officials = jObjMain.getJSONArray("officials");
       for (int i = 0; i < offices.length(); i++) {
@@ -85,43 +88,65 @@ public class RepsDownloader implements Runnable {
           String name = official.getString("name");
           String seat = office.getString("name");
           String party = official.getString("party");
-          String address = "N\\A";
-          String phones = "N\\A";
-          String email = "N\\A";
-          String urls = "N\\A";
-          String photosUrl = "N\\A";
+          List<String> address = new ArrayList<>();
+          List<String> phones = new ArrayList<>();
+          List<String> email = new ArrayList<>();
+          List<String> urls = new ArrayList<>();
+          String photosUrl = "x";
+          String facebook = "";
+          String twitter = "";
+          String youtube = "";
 
           if (official.has("address")){
-            StringBuilder sb = new StringBuilder();
             JSONArray addressArray = official.getJSONArray("address");
-            JSONObject ad = addressArray.getJSONObject(0);
-            sb.append(ad.getString("line1")).append("\n");
-            sb.append(ad.getString("city"));
-            if (!ad.getString("state").equals("DC")) {
-              sb.append("\n");
-            } else {
-              sb.append(" ");
+            for (int k = 0; k < addressArray.length(); k++) {
+              StringBuilder sb = new StringBuilder();
+              JSONObject ad = addressArray.getJSONObject(0);
+              sb.append(ad.getString("line1")).append("\n");
+              sb.append(ad.getString("city"));
+              if (!ad.getString("state").equals("DC")) {
+                sb.append(", ");
+              } else {
+                sb.append(" ");
+              }
+              sb.append(ad.getString("state")).append("\n");
+              sb.append(ad.getString("zip")).append("\n");
+              address.add(sb.toString());
             }
-            sb.append(ad.getString("state")).append("\n");
-            sb.append(ad.getString("zip")).append("\n");
-            address = sb.toString();
           }
           if (official.has("phones")){
-            StringBuilder sb = new StringBuilder();
             JSONArray phoneArray = official.getJSONArray("phones");
             for (int k = 0; k < phoneArray.length(); k++) {
-              sb.append(phoneArray.getString(k)).append("\n");
+              phones.add(phoneArray.getString(k));
             }
-            phones = sb.toString();
           }
           if (official.has("emails")) {
-            email = official.getString("emails");
+            JSONArray emailsArray = official.getJSONArray("emails");
+            for (int k = 0; k < emailsArray.length(); k++) {
+              email.add(emailsArray.getString(k));
+            }
           }
           if (official.has("urls")){
-            urls = official.getString("urls");
+            JSONArray urlsArray = official.getJSONArray("urls");
+            for (int k = 0; k < urlsArray.length(); k++) {
+              urls.add(urlsArray.getString(k));
+            }
           }
           if (official.has("photoUrl")) {
             photosUrl = official.getString("photoUrl");
+          }
+          if (official.has("channels")) {
+            JSONArray channelsArray = official.getJSONArray("channels");
+            for (int k = 0; k < channelsArray.length(); k++) {
+              JSONObject channel = channelsArray.getJSONObject(k);
+              if (channel.getString("type").equals("Facebook")) {
+                facebook = channel.getString("id");
+              } else if (channel.getString("type").equals("Twitter")) {
+                twitter = channel.getString("id");
+              } else if (channel.getString("type").equals("YouTube")) {
+                youtube = channel.getString("id");
+              }
+            }
           }
 
           Official newOfficial = new Official(
@@ -132,7 +157,10 @@ public class RepsDownloader implements Runnable {
                   phones,
                   email,
                   urls,
-                  photosUrl
+                  photosUrl,
+                  facebook,
+                  twitter,
+                  youtube
           );
           mainActivity.runOnUiThread(new Runnable() {
             @Override

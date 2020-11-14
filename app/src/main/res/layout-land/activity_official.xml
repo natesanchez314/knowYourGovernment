@@ -15,15 +15,14 @@
 
         <ImageView
             android:id="@+id/official_photo"
-            android:layout_width="378dp"
-            android:layout_height="378dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
+            android:layout_width="304dp"
+            android:layout_height="279dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="16dp"
             android:onClick="clickImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@+id/official_party"
             app:srcCompat="@drawable/placeholder" />
 
@@ -36,6 +35,40 @@
             app:layout_constraintEnd_toEndOf="@+id/official_photo"
             app:layout_constraintStart_toStartOf="@+id/official_photo"
             app:srcCompat="@drawable/dem_logo" />
+
+        <ImageView
+            android:id="@+id/official_facebook"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="60dp"
+            android:onClick="clickFacebook"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/official_website"
+            app:srcCompat="@drawable/facebook" />
+
+        <ImageView
+            android:id="@+id/official_twitter"
+            android:layout_width="73dp"
+            android:layout_height="71dp"
+            android:layout_marginTop="60dp"
+            android:onClick="clickTwitter"
+            app:layout_constraintEnd_toStartOf="@+id/official_youtube"
+            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintStart_toEndOf="@+id/official_facebook"
+            app:layout_constraintTop_toBottomOf="@+id/official_website"
+            app:srcCompat="@drawable/twitter" />
+
+        <ImageView
+            android:id="@+id/official_youtube"
+            android:layout_width="69dp"
+            android:layout_height="73dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="20dp"
+            android:onClick="clickYoutube"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/official_website"
+            app:srcCompat="@drawable/youtube" />
 
         <TextView
             android:id="@+id/official_location"
@@ -55,7 +88,7 @@
             android:layout_height="wrap_content"
             android:text="TextView"
             android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/official_seat" />
 
@@ -63,19 +96,21 @@
             android:id="@+id/official_party"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="TextView"
             android:textColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/official_name" />
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/official_location" />
 
         <TextView
             android:id="@+id/official_seat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="TextView"
             android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/official_location" />
 
@@ -88,19 +123,19 @@
             android:text="Address:"
             android:textColor="#FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/official_photo" />
+            app:layout_constraintTop_toBottomOf="@+id/official_name" />
 
         <TextView
             android:id="@+id/official_address"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="18dp"
             android:layout_marginStart="96dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:onClick="clickAddress"
             android:text="N/A"
             android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/official_photo"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/address" />
 
         <TextView
@@ -118,12 +153,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="96dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:onClick="clickPhone"
             android:text="N/A"
             android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/official_photo"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/phone" />
 
         <TextView
@@ -141,12 +176,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="96dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:onClick="clickEmail"
             android:text="N/A"
             android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/official_photo"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/email" />
 
         <TextView
@@ -164,46 +199,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="96dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:onClick="clickWebsite"
             android:text="N/A"
             android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/official_photo"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/website" />
 
-        <ImageView
-            android:id="@+id/official_facebook"
-            android:layout_width="79dp"
-            android:layout_height="83dp"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="16dp"
-            android:onClick="clickFacebook"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/official_website"
-            app:srcCompat="@drawable/facebook" />
-
-        <ImageView
-            android:id="@+id/official_twitter"
-            android:layout_width="73dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="16dp"
-            android:onClick="clickTwitter"
-            app:layout_constraintEnd_toStartOf="@+id/official_youtube"
-            app:layout_constraintStart_toEndOf="@+id/official_facebook"
-            app:layout_constraintTop_toBottomOf="@+id/official_website"
-            app:srcCompat="@drawable/twitter" />
-
-        <ImageView
-            android:id="@+id/official_youtube"
-            android:layout_width="71dp"
-            android:layout_height="68dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="28dp"
-            android:onClick="clickYoutube"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/official_website"
-            app:srcCompat="@drawable/youtube" />
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="395dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

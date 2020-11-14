@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
     recyclerView = findViewById(R.id.recycler_view);
     officialAdapter = new OfficialAdapter(officialList, this);
     recyclerView.setAdapter(officialAdapter);
@@ -62,12 +63,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     criteria.setAltitudeRequired(false);
     criteria.setBearingRequired(false);
     criteria.setSpeedRequired(false);
+    locationTextView = findViewById(R.id.main_location);
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PERMISSION_GRANTED) {
       ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, 111);
     } else {
       setLocation("");
     }
-    officialAdapter.notifyDataSetChanged();
   }
 
   @Override
@@ -126,43 +127,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   @SuppressLint("MissingPermission")
   private void setLocation(String s) {
-    officialList.clear();
-    if (s.trim().equals("")) {
-      String bestProvider = locationManager.getBestProvider(criteria, true);
-      Location currentLocation = null;
-      if (bestProvider != null) {
-        currentLocation = locationManager.getLastKnownLocation(bestProvider);
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-          List<Address> addresses = geocoder.getFromLocation(
-                  currentLocation.getLatitude(),
-                  currentLocation.getLongitude(),
-                  1
-          );
-          String zip = "";
-          for (Address ad : addresses) {
-            zip = ad.getPostalCode() == null ? "" : ad.getPostalCode();
+    if (checkNetworkConnection()) {
+      officialList.clear();
+      if (s.trim().equals("")) {
+        String bestProvider = locationManager.getBestProvider(criteria, true);
+        Location currentLocation = null;
+        if (bestProvider != null) {
+          currentLocation = locationManager.getLastKnownLocation(bestProvider);
+          Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+          try {
+            List<Address> addresses = geocoder.getFromLocation(
+                    currentLocation.getLatitude(),
+                    currentLocation.getLongitude(),
+                    1
+            );
+            String zip = "";
+            for (Address ad : addresses) {
+              zip = ad.getPostalCode() == null ? "" : ad.getPostalCode();
+            }
+            RepsDownloader rd = new RepsDownloader(this, zip);
+            new Thread(rd).start();
+          } catch (IOException e) {
+            noNetwork();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            e.printStackTrace();
           }
-          RepsDownloader rd = new RepsDownloader(this, zip);
-          new Thread(rd).start();
-        } catch (IOException e) {
-          Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-          e.printStackTrace();
         }
+      } else {
+        RepsDownloader rd = new RepsDownloader(this, s);
+        new Thread(rd).start();
       }
+      officialAdapter.notifyDataSetChanged();
     } else {
-      RepsDownloader rd = new RepsDownloader(this, s);
-      new Thread(rd).start();
+      noNetwork();
     }
   }
 
   public void displayLocation(String loc) {
     locationString = loc;
-    locationTextView.setText(locationString);
+    locationTextView.setText(loc);
   }
 
   public void addOfficial(Official official) {
     officialList.add(official);
     officialAdapter.notifyDataSetChanged();
+  }
+
+  private void noNetwork() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle("No Network Connection");
+    builder.setMessage("Data cannot be accessed/loaded without an internet connection.");
+    AlertDialog dialog = builder.create();
+    dialog.show();
   }
 }
