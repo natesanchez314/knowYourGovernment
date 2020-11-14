@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   private OfficialAdapter officialAdapter;
   private final List<Official> officialList = new ArrayList<Official>();
   private String locationString;
+  private TextView locationTextView;
   private LocationManager locationManager;
   private Criteria criteria;
 
@@ -58,9 +59,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     criteria = new Criteria();
     criteria.setPowerRequirement(Criteria.POWER_HIGH);
     criteria.setAccuracy(Criteria.ACCURACY_FINE);
-    // use network for location
-    //criteria.setPowerRequirement(Criteria.POWER_LOW);
-    //criteria.setAccuracy(Criteria.ACCURACY_MEDIUM);
     criteria.setAltitudeRequired(false);
     criteria.setBearingRequired(false);
     criteria.setSpeedRequired(false);
@@ -83,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Official official = officialList.get(recyclerView.getChildAdapterPosition(view));
     Intent intent = new Intent(getApplicationContext(), OfficialActivity.class);
     intent.putExtra("official", official);
+    intent.putExtra("location", locationString);
     startActivity(intent);
   }
 
@@ -127,41 +126,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   @SuppressLint("MissingPermission")
   private void setLocation(String s) {
-    if (!s.trim().equals("")) {
-      Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-      try {
-        List<Address> addresses;
-        addresses = geocoder.getFromLocationName(s, 10);
-        displayLocation(addresses);
-      } catch (IOException e) {
-        Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-        e.printStackTrace();
+    officialList.clear();
+    if (s.trim().equals("")) {
+      String bestProvider = locationManager.getBestProvider(criteria, true);
+      Location currentLocation = null;
+      if (bestProvider != null) {
+        currentLocation = locationManager.getLastKnownLocation(bestProvider);
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+          List<Address> addresses = geocoder.getFromLocation(
+                  currentLocation.getLatitude(),
+                  currentLocation.getLongitude(),
+                  1
+          );
+          String zip = "";
+          for (Address ad : addresses) {
+            zip = ad.getPostalCode() == null ? "" : ad.getPostalCode();
+          }
+          RepsDownloader rd = new RepsDownloader(this, zip);
+          new Thread(rd).start();
+        } catch (IOException e) {
+          Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+          e.printStackTrace();
+        }
       }
     } else {
-      Toast.makeText(this, "auto", Toast.LENGTH_SHORT).show();
-      locationString = "60614";
-      RepsDownloader rd = new RepsDownloader(this, locationString);
+      RepsDownloader rd = new RepsDownloader(this, s);
       new Thread(rd).start();
     }
   }
 
-  private void displayLocation(List<Address> addresses) {
-    StringBuilder sb = new StringBuilder();
-    if (addresses.size() == 0) {
-      ((TextView) findViewById(R.id.location_text_view)).setText(R.string.no_location);
-      return;
-    }
-    for (Address ad : addresses) {
-      String a = String.format("%s %s %s %s %s %s",
-              (ad.getSubThoroughfare() == null ? "" : ad.getSubThoroughfare()),
-              (ad.getThoroughfare() == null ? "" : ad.getThoroughfare()),
-              (ad.getLocality() == null ? "" : ad.getLocality()),
-              (ad.getAdminArea() == null ? "" : ad.getAdminArea()),
-              (ad.getPostalCode() == null ? "" : ad.getPostalCode()),
-              (ad.getCountryName() == null ? "" : ad.getCountryName()));
-      sb.append("\n");
-    }
-    ((TextView) findViewById(R.id.location_text_view)).setText(sb.toString());
+  public void displayLocation(String loc) {
+    locationString = loc;
+    locationTextView.setText(locationString);
   }
 
   public void addOfficial(Official official) {

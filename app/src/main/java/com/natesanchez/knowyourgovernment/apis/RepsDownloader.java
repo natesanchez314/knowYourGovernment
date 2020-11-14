@@ -1,6 +1,7 @@
 package com.natesanchez.knowyourgovernment.apis;
 
 import android.net.Uri;
+import android.widget.TextView;
 
 import com.natesanchez.knowyourgovernment.MainActivity;
 import com.natesanchez.knowyourgovernment.Official;
@@ -65,6 +66,13 @@ public class RepsDownloader implements Runnable {
     try {
       JSONObject jObjMain = new JSONObject(s);
       JSONObject normalizedInput = jObjMain.getJSONObject("normalizedInput");
+      String locationString = String.format("%s, %s %s",
+              normalizedInput.getString("city"),
+              normalizedInput.getString("state"),
+              normalizedInput.getString("zip")
+      );
+      TextView mainLocation = mainActivity.findViewById(R.id.main_location);
+      mainLocation.setText(locationString);
       JSONArray offices = jObjMain.getJSONArray("offices");
       JSONArray officials = jObjMain.getJSONArray("officials");
       for (int i = 0; i < offices.length(); i++) {
@@ -73,10 +81,58 @@ public class RepsDownloader implements Runnable {
         for (int j = 0; j < officialIndices.length(); j++) {
           int index = Integer.parseInt(officialIndices.get(j).toString());
           JSONObject official = officials.getJSONObject(index);
+
+          String name = official.getString("name");
+          String seat = office.getString("name");
+          String party = official.getString("party");
+          String address = "N\\A";
+          String phones = "N\\A";
+          String email = "N\\A";
+          String urls = "N\\A";
+          String photosUrl = "N\\A";
+
+          if (official.has("address")){
+            StringBuilder sb = new StringBuilder();
+            JSONArray addressArray = official.getJSONArray("address");
+            JSONObject ad = addressArray.getJSONObject(0);
+            sb.append(ad.getString("line1")).append("\n");
+            sb.append(ad.getString("city"));
+            if (!ad.getString("state").equals("DC")) {
+              sb.append("\n");
+            } else {
+              sb.append(" ");
+            }
+            sb.append(ad.getString("state")).append("\n");
+            sb.append(ad.getString("zip")).append("\n");
+            address = sb.toString();
+          }
+          if (official.has("phones")){
+            StringBuilder sb = new StringBuilder();
+            JSONArray phoneArray = official.getJSONArray("phones");
+            for (int k = 0; k < phoneArray.length(); k++) {
+              sb.append(phoneArray.getString(k)).append("\n");
+            }
+            phones = sb.toString();
+          }
+          if (official.has("emails")) {
+            email = official.getString("emails");
+          }
+          if (official.has("urls")){
+            urls = official.getString("urls");
+          }
+          if (official.has("photoUrl")) {
+            photosUrl = official.getString("photoUrl");
+          }
+
           Official newOfficial = new Official(
-                  official.getString("name"),
-                  office.getString("name"),
-                  official.getString("party")
+                  name,
+                  seat,
+                  party,
+                  address,
+                  phones,
+                  email,
+                  urls,
+                  photosUrl
           );
           mainActivity.runOnUiThread(new Runnable() {
             @Override

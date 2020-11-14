@@ -9,25 +9,19 @@ public class Official implements Serializable {
   private String party;
   private String address;
   private String number;
+  private String email;
   private String website;
   private String imageUrl;
 
-  public Official(String name, String seat, String party, String address, String number, String website, String image) {
+  public Official(String name, String seat, String party, String address, String number, String email, String website, String image) {
     this.name = name;
     this.seat = seat;
     this.party = party;
-    if (address != null) {
-      this.address = address;
-    }
-    if (number != null) {
-      this.number = number;
-    }
-    if (website != null) {
-      this.website = website;
-    }
-    if (imageUrl != null) {
-      this.imageUrl = image;
-    }
+    this.address = address;
+    this.number = number;
+    this.email = email;
+    this.website = website;
+    this.imageUrl = image;
   }
 
   public String getName() {
@@ -48,6 +42,10 @@ public class Official implements Serializable {
 
   public String getNumber() {
     return number;
+  }
+
+  public String getEmail() {
+    return email;
   }
 
   public String getWebsite() {
