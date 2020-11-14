@@ -1,4 +1,8 @@
 package com.natesanchez.knowyourgovernment;
 
-public class PhotoDetailActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class PhotoDetailActivity extends AppCompatActivity {
+
+
 }

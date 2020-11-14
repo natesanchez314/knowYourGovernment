@@ -32,7 +32,7 @@ public class OfficialAdapter extends RecyclerView.Adapter<OfficialViewHolder> {
     Official official = officialList.get(position);
     holder.name.setText(official.getName());
     holder.seat.setText(official.getSeat());
-    holder.party.setText(String.format("(%s)", official.getParty()));
+    holder.party.setText(String.format(" (%s)", official.getParty()));
   }
 
   @Override

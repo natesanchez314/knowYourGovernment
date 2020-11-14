@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Know Your Government</string>
+    <string name="civics_api_key">AIzaSyC797zVheg8DufB8kiI7KSfyvLbiM4VXZc</string>
+    <string name="no_location">Can\'t find location</string>
 </resources>
